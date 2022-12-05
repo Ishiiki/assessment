@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+//Creating Role in AuthController, Do not run unless you want to create a new role
+//Always create a Unique role so error will not show
+Route::get('create_role/',[AuthController::class, 'create_role']);
+
 
 Route::get('', function () {
     return view('welcome');

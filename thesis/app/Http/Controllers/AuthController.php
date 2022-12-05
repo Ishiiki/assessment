@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Roles;
 use App\Models\User;
+use App\Models\UserRoles;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -16,7 +18,11 @@ class AuthController extends Controller
 
     public function create()
     {
-        return view('Auth.register');
+        return view('Auth.register',[
+            'title' => 'Register',
+            'roles' => Roles::get(),
+            'user' => User::get(),
+        ]);
     }
 
    
@@ -33,9 +39,18 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role,
         ])){
-            return back()->with('success', 'Registered Succesfully!');
+            
+           if (User::where('email',$request->email)->exists()) {
+                $user = User::where('email',$request->email)->first();
+                UserRoles::create([
+                    'user_id' => $user->id,
+                    'roles_id' => $request->role
+                ]);
+                return back()->with('success', 'Registered Succesfully!');
+           }
+
+           return back()->with('success', 'Something Wentt Wrong!');
         }
 
         abort(404);
@@ -63,5 +78,17 @@ class AuthController extends Controller
             'email' => 'This Email is not registered',
        ])->onlyInput('email');
     }
+
+    public function create_role(){
+        Roles::create([
+            'role_name' => 'Student'
+        ]);
+
+        Roles::create([
+            'role_name' => 'School'
+        ]);
+
+    }
+
 
 }

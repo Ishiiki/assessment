@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Register</title>
+    <title>{{ isset($title) ? $title : '...' }}</title>
 </head>
 
 
@@ -42,21 +42,23 @@
        </div>
         
        <div>
-        <select name="role" id="">
-            <option value="student" selected>Student</option>
-            <option value="school">School</option>
-        </select>
-        @error('role')
+            @isset($roles)
+            <select name="role">
+                @foreach ($roles as $role)
+                    <option value="{{ $role->id }}" selected>{{ $role->role_name }}</option>
+                @endforeach
+            </select>
+            @endisset
+
+
+            @error('role')
                 {{ $message }}
             @enderror
        </div>
+
         <input type="submit" value="Register">
 
     </form>
-
-
-
-
 
 </body>
 
